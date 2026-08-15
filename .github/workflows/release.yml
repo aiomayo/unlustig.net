@@ -62,9 +62,18 @@ jobs:
           mkdir -p dist
           packwiz refresh --build
           packwiz modrinth export -o "dist/${BASE}.mrpack"
-          packwiz curseforge export -s client -o "dist/${BASE}-curseforge.zip" \
-            || echo "::warning::CurseForge export failed"
+          packwiz curseforge export -s client -o "dist/${BASE}-curseforge.zip"
           ls -la dist
+
+          # Both publish steps below glob for these exact files. A missing or
+          # empty artifact must fail here, while the error is still legible,
+          # rather than surfacing later as an opaque upload error.
+          for f in "dist/${BASE}.mrpack" "dist/${BASE}-curseforge.zip"; do
+            if [ ! -s "$f" ]; then
+              echo "::error::$f is missing or empty - export failed"
+              exit 1
+            fi
+          done
 
       - name: Generate mod list
         run: |
@@ -81,17 +90,34 @@ jobs:
           path: dist/*
           if-no-files-found: error
 
-      - name: Publish to Modrinth and CurseForge
+      # Each platform gets exactly ONE file, in the only format it accepts.
+      # Passing both artifacts to one mc-publish step makes it treat the first
+      # as primary and the rest as "additional files" uploaded with a
+      # parentFileID, which CurseForge rejects with errorCode 1012 - the
+      # .mrpack is not a valid CurseForge modpack file, so it cannot be a
+      # parent. The two artifacts are the same pack in two formats anyway,
+      # not a main file plus a supplementary one.
+      - name: Publish to Modrinth
         if: github.ref_type == 'tag' && inputs.dry-run != true
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: ${{ secrets.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          files: dist/*.mrpack
+          name: unlustig.net ${{ steps.ver.outputs.version }}
+          version: ${{ steps.ver.outputs.version }}
+          version-type: release
+          game-versions: ${{ steps.meta.outputs.game_versions }}
+          loaders: ${{ steps.meta.outputs.loader }}
+          github-token: ''
+
+      - name: Publish to CurseForge
+        if: github.ref_type == 'tag' && inputs.dry-run != true
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
           curseforge-id: ${{ secrets.CURSEFORGE_ID }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          files: |
-            dist/*.mrpack
-            dist/*.zip
+          files: dist/*-curseforge.zip
           name: unlustig.net ${{ steps.ver.outputs.version }}
           version: ${{ steps.ver.outputs.version }}
           version-type: release
