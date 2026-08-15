@@ -146,6 +146,41 @@ jobs:
           sys.exit(1 if failed else 0)
           PY
 
+      - name: Validate servers.dat
+        run: |
+          python3 - <<'PY'
+          import sys, gzip, pathlib, struct
+
+          # Minecraft reads servers.dat as UNCOMPRESSED NBT (NbtIo.read, not
+          # readCompressed). A gzipped file fails with "Invalid tag id: 31"
+          # (0x1f, the gzip magic byte), and the in-game server entry silently
+          # disappears on first launch.
+          path = pathlib.Path("servers.dat")
+          if not path.is_file():
+              print("OK: no servers.dat")
+              sys.exit(0)
+
+          data = path.read_bytes()
+          if data[:2] == b"\x1f\x8b":
+              print(f"::error file={path}::servers.dat is gzip-compressed; "
+                    "Minecraft expects uncompressed NBT (gzip -d it)")
+              sys.exit(1)
+          if not data or data[0] != 0x0A:
+              print(f"::error file={path}::servers.dat does not start with "
+                    f"TAG_Compound (0x0a), found {data[:1].hex() or 'empty'}")
+              sys.exit(1)
+
+          # Walk the root compound far enough to prove it is real NBT.
+          i = 1
+          name_len = struct.unpack_from(">H", data, i)[0]
+          i += 2 + name_len
+          if data[i] != 0x09:
+              print(f"::error file={path}::expected a 'servers' TAG_List")
+              sys.exit(1)
+
+          print(f"OK: servers.dat is uncompressed NBT ({len(data)} bytes)")
+          PY
+
       - name: Build exports
         run: |
           set -euo pipefail

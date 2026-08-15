@@ -10,6 +10,9 @@ file = "config/fancymenu/customizablemenus.txt"
 file = "config/fancymenu/customization/main_menu.txt"
 
 [[files]]
+file = "config/fancymenu/listener_instances.txt"
+
+[[files]]
 file = "config/fancymenu/options.txt"
 
 [[files]]
@@ -39,6 +42,9 @@ metafile = true
 [[files]]
 file = "options.txt"
 preserve = true
+
+[[files]]
+file = "resourcepacks/unlustig.net/assets/minecraft/textures/gui/title/edition.png"
 
 [[files]]
 file = "resourcepacks/unlustig.net/assets/minecraft/textures/gui/title/minecraft.png"

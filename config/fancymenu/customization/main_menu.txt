@@ -135,6 +135,115 @@ vanilla_button {
   nine_slice_slider_handle_border_y = 5
 }
 
+vanilla_button {
+  button_element_executable_block_identifier = 71111111-1111-4111-8111-111111111111-1755264000000
+  [executable_block:71111111-1111-4111-8111-111111111111-1755264000000][type:generic] = [executables:]
+  restartbackgroundanimations = true
+  loopbackgroundanimations = true
+  nine_slice_custom_background = false
+  nine_slice_border_x = 5
+  nine_slice_border_y = 5
+  navigatable = true
+  widget_active_state_requirement_container_identifier = 72111111-1111-4111-8111-111111111111-1755264000000
+  [loading_requirement_container_meta:72111111-1111-4111-8111-111111111111-1755264000000] = [groups:][instances:]
+  element_type = vanilla_button
+  instance_identifier = mc_titlescreen_language_button
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = original
+  x = 0
+  y = 0
+  width = 20
+  height = 20
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+  element_loading_requirement_container_identifier = 73111111-1111-4111-8111-111111111111-1755264000000
+  [loading_requirement_container_meta:73111111-1111-4111-8111-111111111111-1755264000000] = [groups:][instances:]
+  is_hidden = true
+  automated_button_clicks = 0
+  nine_slice_slider_handle = false
+  nine_slice_slider_handle_border_x = 5
+  nine_slice_slider_handle_border_y = 5
+}
+
+vanilla_button {
+  button_element_executable_block_identifier = 81111111-1111-4111-8111-111111111111-1755264000000
+  [executable_block:81111111-1111-4111-8111-111111111111-1755264000000][type:generic] = [executables:]
+  restartbackgroundanimations = true
+  loopbackgroundanimations = true
+  nine_slice_custom_background = false
+  nine_slice_border_x = 5
+  nine_slice_border_y = 5
+  navigatable = true
+  widget_active_state_requirement_container_identifier = 82111111-1111-4111-8111-111111111111-1755264000000
+  [loading_requirement_container_meta:82111111-1111-4111-8111-111111111111-1755264000000] = [groups:][instances:]
+  element_type = vanilla_button
+  instance_identifier = mc_titlescreen_accessibility_button
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = original
+  x = 0
+  y = 0
+  width = 20
+  height = 20
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+  element_loading_requirement_container_identifier = 83111111-1111-4111-8111-111111111111-1755264000000
+  [loading_requirement_container_meta:83111111-1111-4111-8111-111111111111-1755264000000] = [groups:][instances:]
+  is_hidden = true
+  automated_button_clicks = 0
+  nine_slice_slider_handle = false
+  nine_slice_slider_handle_border_x = 5
+  nine_slice_slider_handle_border_y = 5
+}
+
+deep_element {
+  element_type = title_screen_realms_notification
+  instance_identifier = deep:title_screen_realms_notification
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 0
+  auto_sizing_base_screen_height = 0
+  sticky_anchor = false
+  anchor_point = vanilla
+  x = 0
+  y = 0
+  width = 20
+  height = 20
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+  element_loading_requirement_container_identifier = 9111111-1111-4111-8111-111111111111-1755264000000
+  [loading_requirement_container_meta:9111111-1111-4111-8111-111111111111-1755264000000] = [groups:][instances:]
+  is_hidden = true
+}
+
 element {
   interactable = false
   source = unlustig.net 0.1.0
@@ -210,7 +319,7 @@ element {
   nine_slice_custom_background = false
   nine_slice_border_x = 5
   nine_slice_border_y = 5
-  label = Join Unlustig.net
+  label = {"placeholder":"local","values":{"key":"selectServer.select"}}
   navigatable = true
   widget_active_state_requirement_container_identifier = 53111111-1111-4111-8111-111111111111-1755264000000
   [loading_requirement_container_meta:53111111-1111-4111-8111-111111111111-1755264000000] = [groups:][instances:]
