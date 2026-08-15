@@ -5,8 +5,10 @@
 /README.md
 /.github/
 
-# Exclude exports so a previous build is never bundled into the next one.
-# Anchored to the root so bundled content (e.g. resourcepacks/*.zip) still ships.
+# Exclude exports so a previous build is never bundled into the next one
 /*.mrpack
 /*.zip
 /dist/
+
+# Resource pack sources -- only the built zip ships
+/resourcepacks/*/

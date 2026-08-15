@@ -20,5 +20,8 @@ file = "options.txt"
 preserve = true
 
 [[files]]
+file = "resourcepacks/unlustig.net.zip"
+
+[[files]]
 file = "servers.dat"
 preserve = true

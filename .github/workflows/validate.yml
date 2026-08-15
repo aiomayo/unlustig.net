@@ -46,6 +46,9 @@ jobs:
           sys.exit(1 if errors else 0)
           PY
 
+      - name: Build resource packs
+        run: python3 .github/scripts/build-resourcepacks.py
+
       - name: Check index is up to date
         run: |
           set -euo pipefail

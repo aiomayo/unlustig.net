@@ -1,8 +1,11 @@
 # Exclude exported CurseForge zip files
-*.zip
+/*.zip
 
 # Exclude exported Modrinth modpacks
-*.mrpack
+/*.mrpack
+
+# Built from resourcepacks/<name>/
+/resourcepacks/*.zip
 
 # CI staging directory for release artifacts
 dist/

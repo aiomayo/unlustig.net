@@ -54,6 +54,9 @@ jobs:
           print(f"loader={loader}")
           PY
 
+      - name: Build resource packs
+        run: python3 .github/scripts/build-resourcepacks.py
+
       - name: Export
         env:
           BASE: unlustig.net-${{ steps.ver.outputs.version }}
