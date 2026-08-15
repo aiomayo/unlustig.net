@@ -1,0 +1,191 @@
+name: Validate
+
+on:
+  workflow_call:
+  pull_request:
+  push:
+    branches: ['**']
+    tags-ignore: ['**']
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Install packwiz
+        run: go install github.com/packwiz/packwiz@latest
+
+      - name: Validate pack.toml
+        run: |
+          python3 - <<'PY'
+          import sys, tomllib
+
+          with open("pack.toml", "rb") as f:
+              pack = tomllib.load(f)
+
+          errors = []
+          for key in ("name", "version", "pack-format"):
+              if not pack.get(key):
+                  errors.append(f"pack.toml is missing '{key}'")
+
+          versions = pack.get("versions", {})
+          if "minecraft" not in versions:
+              errors.append("pack.toml [versions] is missing 'minecraft'")
+
+          loaders = [k for k in versions if k != "minecraft"]
+          if len(loaders) != 1:
+              errors.append(f"expected exactly one mod loader, found {loaders}")
+
+          for e in errors:
+              print(f"::error file=pack.toml::{e}")
+          sys.exit(1 if errors else 0)
+          PY
+
+      - name: Check index is up to date
+        run: |
+          set -euo pipefail
+          cp index.toml /tmp/index.before
+          packwiz refresh
+          if ! diff -u /tmp/index.before index.toml; then
+            echo "::error file=index.toml::index.toml is stale - run 'packwiz refresh' and commit the result"
+            exit 1
+          fi
+
+      - name: Validate mod metadata
+        run: |
+          python3 - <<'PY'
+          import sys, tomllib, pathlib
+
+          # packwiz refresh does NOT reject a .pw.toml with no [download] block;
+          # it exits 0 and the export panics later. Check the fields explicitly.
+          failed = False
+          for path in sorted(pathlib.Path("mods").glob("*.pw.toml")):
+              with path.open("rb") as f:
+                  mod = tomllib.load(f)
+
+              def err(msg):
+                  global failed
+                  failed = True
+                  print(f"::error file={path}::{msg}")
+
+              if not mod.get("name"):
+                  err("missing 'name'")
+              if not mod.get("filename"):
+                  err("missing 'filename'")
+
+              download = mod.get("download")
+              if not download:
+                  err("missing [download] block")
+              elif not download.get("url") and download.get("mode") != "metadata:curseforge":
+                  err("[download] needs a 'url' or mode = \"metadata:curseforge\"")
+              elif not download.get("hash"):
+                  err("[download] is missing 'hash'")
+
+              # The pack is client-only (the server runs Folia, which loads
+              # plugins rather than Fabric mods), so a mod left at the default
+              # "both" would be shipped to servers that cannot use it.
+              side = mod.get("side")
+              if side != "client":
+                  err(f'side is {side!r}, expected "client"')
+
+          sys.exit(1 if failed else 0)
+          PY
+
+      - name: Build exports
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          packwiz refresh --build
+          packwiz modrinth export -o dist/validate.mrpack
+          packwiz curseforge export -s client -o dist/validate-curseforge.zip
+
+      - name: Verify exported artifacts
+        run: |
+          python3 - <<'PY'
+          import sys, json, zipfile, tomllib, pathlib
+
+          # A failed export still leaves a 0-byte file behind, so existence
+          # alone is not proof of success - open the archives and check them.
+          failed = False
+
+          def err(msg):
+              global failed
+              failed = True
+              print(f"::error::{msg}")
+
+          with open("pack.toml", "rb") as f:
+              pack = tomllib.load(f)
+          versions = pack["versions"]
+          mc = versions["minecraft"]
+          loader = next(k for k in versions if k != "minecraft")
+          expected_mods = {p.stem for p in pathlib.Path("mods").glob("*.pw.toml")}
+
+          mrpack = pathlib.Path("dist/validate.mrpack")
+          if mrpack.stat().st_size == 0:
+              err("validate.mrpack is empty - the export failed")
+              sys.exit(1)
+
+          with zipfile.ZipFile(mrpack) as z:
+              if bad := z.testzip():
+                  err(f"validate.mrpack is corrupt at {bad}")
+              index = json.loads(z.read("modrinth.index.json"))
+
+          deps = index.get("dependencies", {})
+          if deps.get("minecraft") != mc:
+              err(f"mrpack targets Minecraft {deps.get('minecraft')}, pack.toml says {mc}")
+          if not any(loader in k for k in deps):
+              err(f"mrpack dependencies {list(deps)} do not mention loader {loader!r}")
+
+          files = index.get("files", [])
+          if len(files) != len(expected_mods):
+              err(f"mrpack has {len(files)} files, pack has {len(expected_mods)} mods")
+
+          for entry in files:
+              env = entry.get("env", {})
+              if env.get("client") != "required":
+                  err(f"{entry['path']} is not required on the client")
+              if not entry.get("downloads"):
+                  err(f"{entry['path']} has no download URLs")
+              if not entry.get("hashes"):
+                  err(f"{entry['path']} has no hashes")
+
+          cf = pathlib.Path("dist/validate-curseforge.zip")
+          if cf.stat().st_size == 0:
+              err("validate-curseforge.zip is empty - the export failed")
+          else:
+              with zipfile.ZipFile(cf) as z:
+                  if bad := z.testzip():
+                      err(f"validate-curseforge.zip is corrupt at {bad}")
+                  if "manifest.json" not in z.namelist():
+                      err("validate-curseforge.zip has no manifest.json")
+
+          if not failed:
+              print(f"OK: {len(files)} mods, Minecraft {mc}, loader {loader}")
+          sys.exit(1 if failed else 0)
+          PY
+
+      - name: Check exports exclude repository metadata
+        run: |
+          python3 - <<'PY'
+          import sys, zipfile
+
+          # The pack lives at the repository root, so README.md/.github/dist
+          # sit inside the pack directory and are excluded only by
+          # .packwizignore. Verify that is actually working.
+          failed = False
+          leaked = ("README.md", ".github", "dist/", ".git")
+
+          for archive in ("dist/validate.mrpack", "dist/validate-curseforge.zip"):
+              with zipfile.ZipFile(archive) as z:
+                  for name in z.namelist():
+                      if any(bad in name for bad in leaked):
+                          failed = True
+                          print(f"::error::{archive} contains {name} - check .packwizignore")
+
+          sys.exit(1 if failed else 0)
+          PY

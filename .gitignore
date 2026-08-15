@@ -1,0 +1,18 @@
+# Exclude exported CurseForge zip files
+*.zip
+
+# Exclude exported Modrinth modpacks
+*.mrpack
+
+# CI staging directory for release artifacts
+dist/
+
+# packwiz binary (must never land inside a pack folder and get exported)
+packwiz
+packwiz.exe
+
+# Editor / OS noise
+.idea/
+.vscode/
+*.swp
+.DS_Store
