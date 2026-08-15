@@ -1,0 +1,7 @@
+[client.advanced.autoUpdater]
+	enableAutoUpdater = false
+
+[common.logging.warning]
+	showHighVanillaRenderDistanceWarning = false
+	showGarbageCollectorWarning = false
+	logGarbageCollectorWarning = false

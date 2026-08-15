@@ -13,3 +13,5 @@ Official modpack of unlustig.net SMP
 
 [![Modrinth](https://img.shields.io/modrinth/dt/FVvoahRd?style=for-the-badge&logo=modrinth&label=modrinth&color=00af5c)](https://modrinth.com/modpack/FVvoahRd)
 [![CurseForge](https://img.shields.io/badge/curseforge-download-f16436?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/modpacks/unlustig-net)
+</div>
+

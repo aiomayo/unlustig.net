@@ -1,6 +1,9 @@
 hash-format = "sha256"
 
 [[files]]
+file = "config/DistantHorizons.toml"
+
+[[files]]
 file = "mods/distanthorizons.pw.toml"
 metafile = true
 
@@ -11,3 +14,10 @@ metafile = true
 [[files]]
 file = "mods/simple-voice-chat.pw.toml"
 metafile = true
+
+[[files]]
+file = "options.txt"
+
+[[files]]
+file = "servers.dat"
+preserve = true
