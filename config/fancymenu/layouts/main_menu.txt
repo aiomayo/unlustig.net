@@ -1,0 +1,51 @@
+type = fancymenu_layout
+
+layout-meta {
+  identifier = net.minecraft.client.gui.screens.TitleScreen
+  is_enabled = true
+  randommode = false
+  randomgroup = 1
+  randomonlyfirsttime = false
+  layout_index = 0
+  render_custom_elements_behind_vanilla = false
+}
+
+element {
+  element_type = vanilla_button
+  instance_identifier = mc_titlescreen_singleplayer_button
+  is_hidden = true
+}
+
+element {
+  element_type = vanilla_button
+  instance_identifier = mc_titlescreen_multiplayer_button
+  is_hidden = true
+}
+
+element {
+  element_type = vanilla_button
+  instance_identifier = mc_titlescreen_realms_button
+  is_hidden = true
+}
+
+element {
+  element_type = custom_button
+  instance_identifier = unlustig_join_button
+  label = Join Unlustig.net
+  anchor_point = top-centered
+  x = -100
+  y = 70
+  width = 200
+  height = 20
+  button_element_executable_block_identifier = unlustig_join_block
+}
+
+executable_block {
+  identifier = unlustig_join_block
+  type = generic
+
+  executable {
+    action = joinserver
+    value = unlustig.net
+  }
+}

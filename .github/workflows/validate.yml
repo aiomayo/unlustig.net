@@ -99,6 +99,66 @@ jobs:
           sys.exit(1 if failed else 0)
           PY
 
+      - name: Validate resource packs
+        run: |
+          python3 - <<'PY'
+          import sys, json, pathlib, zipfile
+
+          failed = False
+
+          def err(msg, file=None):
+              global failed
+              failed = True
+              print(f"::error{f' file={file}' if file else ''}::{msg}")
+
+          packs = pathlib.Path("resourcepacks")
+          built = []
+          if packs.is_dir():
+              for src in sorted(p for p in packs.iterdir() if p.is_dir()):
+                  meta = src / "pack.mcmeta"
+                  if not meta.is_file():
+                      err(f"{src} has no pack.mcmeta", meta)
+                      continue
+                  try:
+                      pack = json.loads(meta.read_text())["pack"]
+                  except Exception as e:
+                      err(f"{meta} is not valid pack.mcmeta: {e}", meta)
+                      continue
+
+                  # Minecraft 26.x replaced "pack_format" with the
+                  # min_format/max_format range; a pack declaring only the old
+                  # key loads as "broken or incompatible".
+                  if "pack_format" in pack and "min_format" not in pack:
+                      err(
+                          f"{meta} uses legacy 'pack_format'; "
+                          "this Minecraft version needs min_format/max_format",
+                          meta,
+                      )
+                  for field in ("min_format", "max_format"):
+                      if field not in pack:
+                          err(f"{meta} is missing '{field}'", meta)
+                      elif not isinstance(pack[field], (int, list)):
+                          err(f"{meta} '{field}' must be an int or [major, minor]", meta)
+
+                  zip_path = packs / f"{src.name}.zip"
+                  if not zip_path.is_file():
+                      err(f"{zip_path} was not built - run build-resourcepacks.py")
+                      continue
+                  with zipfile.ZipFile(zip_path) as z:
+                      names = z.namelist()
+                      if bad := z.testzip():
+                          err(f"{zip_path} is corrupt at {bad}")
+                      if "pack.mcmeta" not in names:
+                          err(f"{zip_path} has no pack.mcmeta at its root")
+                      if not any(n.startswith("assets/") for n in names):
+                          err(f"{zip_path} contains no assets/")
+                  built.append(zip_path.name)
+
+          if not failed:
+              print(f"OK: resourcepacks={built}")
+          sys.exit(1 if failed else 0)
+          PY
+
       - name: Build exports
         run: |
           set -euo pipefail

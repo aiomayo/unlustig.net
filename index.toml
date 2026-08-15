@@ -4,11 +4,26 @@ hash-format = "sha256"
 file = "config/DistantHorizons.toml"
 
 [[files]]
+file = "config/fancymenu/layouts/main_menu.txt"
+
+[[files]]
 file = "mods/distanthorizons.pw.toml"
 metafile = true
 
 [[files]]
 file = "mods/fabric-api.pw.toml"
+metafile = true
+
+[[files]]
+file = "mods/fancymenu.pw.toml"
+metafile = true
+
+[[files]]
+file = "mods/konkrete.pw.toml"
+metafile = true
+
+[[files]]
+file = "mods/melody.pw.toml"
 metafile = true
 
 [[files]]
