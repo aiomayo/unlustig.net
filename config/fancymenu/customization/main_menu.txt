@@ -141,8 +141,8 @@ element {
   source_mode = direct
   shadow = true
   scale = 1.0
-  base_color = #FFFFFFFF
-  text_border = 2
+  base_color = #FFAA00FF
+  text_border = 0
   line_spacing = 2
   enable_scrolling = false
   auto_line_wrapping = false
@@ -183,9 +183,9 @@ element {
   sticky_anchor = false
   anchor_point = bottom-left
   x = 2
-  y = -22
-  width = 196
-  height = 12
+  y = -21
+  width = 250
+  height = 10
   stretch_x = false
   stretch_y = false
   stay_on_screen = false
