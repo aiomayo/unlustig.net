@@ -44,6 +44,9 @@ file = "options.txt"
 preserve = true
 
 [[files]]
+file = "resourcepacks/unlustig.net/assets/minecraft/texts/splashes.txt"
+
+[[files]]
 file = "resourcepacks/unlustig.net/assets/minecraft/textures/gui/title/edition.png"
 
 [[files]]
