@@ -223,7 +223,7 @@ jobs:
           # sit inside the pack directory and are excluded only by
           # .packwizignore. Verify that is actually working.
           failed = False
-          leaked = ("README.md", ".github", "dist/", ".git")
+          leaked = ("README.md", "CONTRIBUTING.md", ".github", "dist/", ".git")
 
           for archive in ("dist/validate.mrpack", "dist/validate-curseforge.zip"):
               with zipfile.ZipFile(archive) as z:
