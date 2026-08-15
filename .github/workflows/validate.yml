@@ -169,6 +169,51 @@ jobs:
           sys.exit(1 if failed else 0)
           PY
 
+      - name: Validate publish inputs
+        run: |
+          python3 - <<'PY'
+          import sys, re, json, zipfile, tomllib
+
+          # The release workflow derives mc-publish's game-versions and loaders
+          # from pack.toml. A malformed value there is only discovered at upload
+          # time, after a tag is already pushed, so check it here instead.
+          failed = False
+
+          def err(msg):
+              global failed
+              failed = True
+              print(f"::error::{msg}")
+
+          with open("pack.toml", "rb") as f:
+              pack = tomllib.load(f)
+          versions = pack["versions"]
+          mc = versions["minecraft"]
+          loader = next(k for k in versions if k != "minecraft")
+
+          # Exactly the values release.yml writes to $GITHUB_OUTPUT.
+          game_versions = f"{mc}"
+
+          if not game_versions:
+              err("game_versions is empty - mc-publish rejects this")
+          if not re.fullmatch(r"\d+(\.\d+)*", game_versions):
+              err(f"game_versions {game_versions!r} is not a bare version number")
+          if "%" in game_versions or "%" in loader:
+              err("publish inputs contain percent-encoding; $GITHUB_OUTPUT does not decode it")
+          if not loader.strip():
+              err("loader is empty")
+
+          # The listing must not claim a version the artifact does not provide.
+          with zipfile.ZipFile("dist/validate.mrpack") as z:
+              index = json.loads(z.read("modrinth.index.json"))
+          manifest_mc = index.get("dependencies", {}).get("minecraft")
+          if manifest_mc != game_versions:
+              err(f"publishing game version {game_versions!r} but the mrpack manifest pins {manifest_mc!r}")
+
+          if not failed:
+              print(f"OK: game-versions={game_versions}, loaders={loader}")
+          sys.exit(1 if failed else 0)
+          PY
+
       - name: Check exports exclude repository metadata
         run: |
           python3 - <<'PY'

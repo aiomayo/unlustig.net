@@ -49,6 +49,13 @@ still targets 26.1 can be used in a 26.2 pack. The pack itself remains a 26.2
 pack — `versions.minecraft` is unchanged — so this is a resolution filter, not a
 multi-version build.
 
+**It is therefore not a publishing input.** Releases advertise
+`versions.minecraft` alone, because that is what the exported `.mrpack` manifest
+pins. Listing 26.1 as a supported game version would promise compatibility the
+artifact does not deliver — a 26.1 player would install the pack and receive a
+26.2 manifest. `validate.yml` enforces this by comparing the published version
+against the built manifest.
+
 **One loader only.** packwiz supports exactly one loader per pack; `packwiz init
 --modloader "fabric,neoforge"` is rejected outright ("Given mod loader is not
 supported"). This is not a packwiz limitation but a format one: a `.mrpack`
@@ -146,13 +153,24 @@ The checks, in order:
 5. **Artifacts verified** — archives open, the mrpack manifest's Minecraft
    version and loader match `pack.toml`, the file count matches the mod count,
    and every entry is client-required with downloads and hashes.
-6. **No metadata leaks** — neither archive contains `README.md`, `.github/`,
+6. **Publish inputs** — the `game-versions` and `loaders` values the release
+   workflow derives from `pack.toml` are non-empty, free of percent-encoding,
+   and the published game version matches the `minecraft` dependency in the
+   built `.mrpack` manifest.
+7. **No metadata leaks** — neither archive contains `README.md`, `.github/`,
    `dist/` or `.git`.
 
 Checks 3 and 5 exist because of two verified packwiz behaviours: `packwiz
 refresh` **accepts** a `.pw.toml` with no `[download]` block and exits 0, with
 the export panicking only later; and a failed export still leaves a **0-byte**
 file behind, so checking that an artifact merely exists is not enough.
+
+Check 6 exists because a real release failed at upload with *"At least one game
+version should be specified"*: the metadata step was percent-encoding a
+multi-value output as `26.1%0A26.2`, a convention required by the `set-output`
+command GitHub removed in 2022. The `$GITHUB_OUTPUT` file that replaced it does
+not decode `%0A`, so mc-publish received the literal string. Publish inputs are
+now validated before a tag can reach the publish step.
 
 ## Releasing
 

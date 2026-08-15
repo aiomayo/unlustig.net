@@ -50,8 +50,7 @@ jobs:
           versions = pack["versions"]
           mc = versions["minecraft"]
           loader = next(k for k in versions if k != "minecraft")
-          extra = pack.get("options", {}).get("acceptable-game-versions", [])
-          print("game_versions=" + "\n".join(sorted({mc, *extra})).replace("\n", "%0A"))
+          print(f"game_versions={mc}")
           print(f"loader={loader}")
           PY
 
