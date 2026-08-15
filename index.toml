@@ -10,7 +10,7 @@ file = "config/fancymenu/customizablemenus.txt"
 file = "config/fancymenu/customization/main_menu.txt"
 
 [[files]]
-file = "config/fancymenu/listener_instances.txt"
+file = "config/fancymenu/customization/pause_menu.txt"
 
 [[files]]
 file = "config/fancymenu/options.txt"
