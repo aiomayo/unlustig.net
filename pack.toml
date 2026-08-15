@@ -1,6 +1,7 @@
 name = "unlustig.net"
 author = "aiomayo"
 version = "0.1.0"
+description = "Official modpack of unlustig.net SMP"
 pack-format = "packwiz:1.1.0"
 
 [index]
