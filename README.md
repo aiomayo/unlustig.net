@@ -13,7 +13,14 @@ the server, not in this repository.
 | Mod | Why |
 |---|---|
 | [Simple Voice Chat](https://modrinth.com/mod/simple-voice-chat) | The reason the pack exists — client half of the server's voice chat plugin |
+| [Distant Horizons](https://modrinth.com/mod/distanthorizons) | LOD terrain — renders the world far beyond the server's view distance |
 | [Fabric API](https://modrinth.com/mod/fabric-api) | Baseline Fabric library |
+
+Distant Horizons ships **beta builds only** — all 428 of its Fabric releases are
+marked beta, so this is its normal release channel, not a pre-release warning.
+It is added as `side = "client"`: it has an optional server component, but Folia
+loads plugins rather than Fabric mods, so the client generates its own LOD data
+from what it has seen.
 
 Deliberately minimal. Simple Voice Chat declares no *required* dependencies — its
 Modrinth entries for Mod Menu, Cloth Config, ViaFabric, Sound Physics, AudioPlayer,
