@@ -1,7 +1,7 @@
 <div align="center">
 
 
-<img src="" alt="unlustig.net" width="128">
+<img src="https://github.com/user-attachments/assets/a5e262ee-740e-402e-b7b2-5aaa521e204a" alt="unlustig.net" width="128">
 
 # Unlustig.net Modpack
 
