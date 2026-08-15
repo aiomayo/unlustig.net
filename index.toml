@@ -4,6 +4,9 @@ hash-format = "sha256"
 file = "config/DistantHorizons.toml"
 
 [[files]]
+file = "config/fancymenu/customizablemenus.txt"
+
+[[files]]
 file = "config/fancymenu/customization/main_menu.txt"
 
 [[files]]
