@@ -4,7 +4,10 @@ hash-format = "sha256"
 file = "config/DistantHorizons.toml"
 
 [[files]]
-file = "config/fancymenu/layouts/main_menu.txt"
+file = "config/fancymenu/customization/main_menu.txt"
+
+[[files]]
+file = "config/fancymenu/options.txt"
 
 [[files]]
 file = "mods/distanthorizons.pw.toml"
@@ -35,7 +38,13 @@ file = "options.txt"
 preserve = true
 
 [[files]]
-file = "resourcepacks/unlustig.net.zip"
+file = "resourcepacks/unlustig.net/assets/minecraft/textures/gui/title/minecraft.png"
+
+[[files]]
+file = "resourcepacks/unlustig.net/pack.mcmeta"
+
+[[files]]
+file = "resourcepacks/unlustig.net/pack.png"
 
 [[files]]
 file = "servers.dat"

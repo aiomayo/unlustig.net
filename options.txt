@@ -1,1 +1,1 @@
-resourcePacks:["vanilla","file/unlustig.net.zip"]
+resourcePacks:["vanilla","file/unlustig.net"]

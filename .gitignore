@@ -4,9 +4,6 @@
 # Exclude exported Modrinth modpacks
 /*.mrpack
 
-# Built from resourcepacks/<name>/
-/resourcepacks/*.zip
-
 # CI staging directory for release artifacts
 dist/
 

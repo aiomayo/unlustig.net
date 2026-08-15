@@ -46,9 +46,6 @@ jobs:
           sys.exit(1 if errors else 0)
           PY
 
-      - name: Build resource packs
-        run: python3 .github/scripts/build-resourcepacks.py
-
       - name: Check index is up to date
         run: |
           set -euo pipefail
@@ -102,7 +99,7 @@ jobs:
       - name: Validate resource packs
         run: |
           python3 - <<'PY'
-          import sys, json, pathlib, zipfile
+          import sys, json, pathlib
 
           failed = False
 
@@ -112,7 +109,7 @@ jobs:
               print(f"::error{f' file={file}' if file else ''}::{msg}")
 
           packs = pathlib.Path("resourcepacks")
-          built = []
+          checked = []
           if packs.is_dir():
               for src in sorted(p for p in packs.iterdir() if p.is_dir()):
                   meta = src / "pack.mcmeta"
@@ -140,22 +137,12 @@ jobs:
                       elif not isinstance(pack[field], (int, list)):
                           err(f"{meta} '{field}' must be an int or [major, minor]", meta)
 
-                  zip_path = packs / f"{src.name}.zip"
-                  if not zip_path.is_file():
-                      err(f"{zip_path} was not built - run build-resourcepacks.py")
-                      continue
-                  with zipfile.ZipFile(zip_path) as z:
-                      names = z.namelist()
-                      if bad := z.testzip():
-                          err(f"{zip_path} is corrupt at {bad}")
-                      if "pack.mcmeta" not in names:
-                          err(f"{zip_path} has no pack.mcmeta at its root")
-                      if not any(n.startswith("assets/") for n in names):
-                          err(f"{zip_path} contains no assets/")
-                  built.append(zip_path.name)
+                  if not (src / "assets").is_dir():
+                      err(f"{src} contains no assets/ directory", meta)
+                  checked.append(src.name)
 
           if not failed:
-              print(f"OK: resourcepacks={built}")
+              print(f"OK: resourcepacks={checked}")
           sys.exit(1 if failed else 0)
           PY
 
