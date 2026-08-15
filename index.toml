@@ -17,6 +17,7 @@ metafile = true
 
 [[files]]
 file = "options.txt"
+preserve = true
 
 [[files]]
 file = "servers.dat"
