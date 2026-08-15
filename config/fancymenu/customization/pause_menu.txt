@@ -24,7 +24,7 @@ vanilla_button {
   widget_active_state_requirement_container_identifier = b3111111-1111-4111-8111-111111111111-1755264000000
   [loading_requirement_container_meta:b3111111-1111-4111-8111-111111111111-1755264000000] = [groups:][instances:]
   element_type = vanilla_button
-  instance_identifier = mc_pausescreen_disconnect_button
+  instance_identifier = pause_disconnect_button
   appearance_delay = no_delay
   appearance_delay_seconds = 1.0
   fade_in_v2 = no_fading
@@ -80,7 +80,7 @@ element {
   auto_sizing_base_screen_height = 1080
   sticky_anchor = false
   anchor_point = element
-  anchor_point_element = mc_pausescreen_disconnect_button
+  anchor_point_element = pause_disconnect_button
   x = 0
   y = 0
   width = 98

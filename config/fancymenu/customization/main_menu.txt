@@ -218,6 +218,33 @@ vanilla_button {
 }
 
 deep_element {
+  element_type = title_screen_branding
+  instance_identifier = deep:title_screen_branding
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 0
+  auto_sizing_base_screen_height = 0
+  sticky_anchor = false
+  anchor_point = vanilla
+  x = 0
+  y = 0
+  width = 20
+  height = 20
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+  element_loading_requirement_container_identifier = a1211111-1111-4111-8111-111111111111-1755264000000
+  [loading_requirement_container_meta:a1211111-1111-4111-8111-111111111111-1755264000000] = [groups:][instances:]
+  is_hidden = true
+}
+
+deep_element {
   element_type = title_screen_realms_notification
   instance_identifier = deep:title_screen_realms_notification
   appearance_delay = no_delay
@@ -292,9 +319,9 @@ element {
   sticky_anchor = false
   anchor_point = bottom-left
   x = 2
-  y = -21
+  y = -12
   width = 250
-  height = 10
+  height = 12
   stretch_x = false
   stretch_y = false
   stay_on_screen = false
